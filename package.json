@@ -1,0 +1,28 @@
+{
+  "name": "proyecto_investigacion",
+  "version": "1.0.0",
+  "description": "Proyecto de investigación de comparación de API vs gRPC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FranciscoJavierSV/Proyecto_Investigacion.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/FranciscoJavierSV/Proyecto_Investigacion/issues"
+  },
+  "homepage": "https://github.com/FranciscoJavierSV/Proyecto_Investigacion#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "graphql": "^16.12.0",
+    "graphql-yoga": "^5.18.0",
+    "mongodb": "^7.1.0"
+  }
+}
