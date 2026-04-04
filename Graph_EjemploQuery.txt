@@ -1,0 +1,60 @@
+query {
+	obtenerDataset(input: { limit: 300, offset: 0 }) {
+		tiempoMs
+
+		clientes {
+			total
+			data {
+				_id
+				nombre
+				apepat
+				correo
+				rfc
+				activo
+			}
+		}
+
+		facturas {
+			total
+			data {
+				_id
+				_idCliente
+				fecha
+				total
+				activo
+			}
+		}
+
+		datosfacturas {
+			total
+			data {
+				_id
+				_idFactura
+				producto
+				cantidad_producto
+				precio_total
+			}
+		}
+
+		productos {
+			total
+			data {
+				_id
+				nombre
+				precio
+				costo
+				activo
+			}
+		}
+
+		variaciones {
+			total
+			data {
+				_id
+				nombre
+				upc
+				activo
+			}
+		}
+	}
+}

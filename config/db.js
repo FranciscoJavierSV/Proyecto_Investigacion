@@ -10,7 +10,7 @@ async function connectDB() {
 
 		console.log('MongoDB conectado');
 
-		return client.db('rendimientoDB');
+		return client.db('baseDR');
 
 	} catch (error) {
 
