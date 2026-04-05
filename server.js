@@ -28,4 +28,66 @@ async function startServer() {
 	});
 }
 
+const {
+	httpRequestDuration,
+	httpRequestsTotal,
+	payloadSize,
+	ttfbMetric,
+	errorsTotal,
+	cpuUsage,
+	memoryUsage
+} = require('./metrics');
+
+const yoga = createYoga({
+	schema,
+	plugins: [
+		{
+			onRequest({ request }) {
+				request.startTime = performance.now();
+				request.cpuStart = process.cpuUsage();
+			},
+
+			onExecute() {
+				const ttfbStart = performance.now();
+
+				return {
+					onExecuteDone({ result, args }) {
+
+						const req = args.contextValue.request;
+
+						const duration = performance.now() - req.startTime;
+
+						// RESPONSE TIME
+						httpRequestDuration.observe(duration);
+
+						// THROUGHPUT
+						httpRequestsTotal.inc();
+
+						// PAYLOAD SIZE
+						const size = Buffer.byteLength(JSON.stringify(result));
+						payloadSize.observe(size);
+
+						// TTFB
+						ttfbMetric.observe(performance.now() - ttfbStart);
+
+						// CPU
+						const cpuEnd = process.cpuUsage(req.cpuStart);
+						const cpuPercent = (cpuEnd.user + cpuEnd.system) / 1000;
+						cpuUsage.set(cpuPercent);
+
+						// MEMORY
+						const mem = process.memoryUsage().heapUsed;
+						memoryUsage.set(mem);
+
+						// ERRORS
+						if (result.errors) {
+							errorsTotal.inc(result.errors.length);
+						}
+					}
+				};
+			}
+		}
+	]
+});
+
 startServer();
