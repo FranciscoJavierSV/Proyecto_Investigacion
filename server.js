@@ -1,30 +1,49 @@
+require('dotenv').config();
 const express = require('express');
 const { createYoga } = require('graphql-yoga');
-const { connectDB } = require('./config/db');
-const registroRoutes = require('./routes/registro.routes');
+const { connectDB, getDB } = require('./config/db');
 const { schema } = require('./graphql/schema');
 
+const allRoutes = require('./restapi/routes/all.routes');
+const clienteRoutes = require('./restapi/routes/cliente.routes');
+const productoRoutes = require('./restapi/routes/producto.routes');
+const variacionRoutes = require('./restapi/routes/variacion.routes');
+const facturaRoutes = require('./restapi/routes/factura.routes');
+const datosFacturaRoutes = require('./restapi/routes/datosFactura.routes');
+
 const app = express();
+const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 
 async function startServer() {
 
-	const db = await connectDB();
+	connectDB().then(() => {
+		const db = getDB();
 
-	const yoga = createYoga({
-		schema,
-		context: () => ({
-			db
-		})
-	});
+		const yoga = createYoga({
+			schema,
+			context: () => ({
+				db
+			})
+		});
 
-	//app.use('/api/registros', registroRoutes);
-	app.use('/graphql', yoga);
+		//app.use('/api/registros', registroRoutes);
+		app.use('/graphql', yoga);
 
-	app.listen(4000, () => {
-		console.log('Servidor corriendo en puerto 4000');
-		console.log('GraphQL: http://localhost:4000/graphql');
+		// REST ROUTES
+		app.use('/rest/', allRoutes);
+		app.use('/rest/clientes', clienteRoutes);
+		app.use('/rest/datosfacturas', datosFacturaRoutes);
+		app.use('/rest/facturas', facturaRoutes);
+		app.use('/rest/productos', productoRoutes);
+		app.use('/rest/variaciones', variacionRoutes);
+
+		app.listen(PORT, () => {
+			console.log(`Servidor corriendo en puerto ${PORT}`);
+			console.log(`GraphQL: http://localhost:${PORT}/graphql`);
+			console.log(`API REST: http://localhost:${PORT}/rest`);
+		});
 	});
 }
 
