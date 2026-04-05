@@ -5,7 +5,7 @@ const register = new client.Registry();
 client.collectDefaultMetrics({ register });
 
 // =========================
-// CUSTOM METRICS
+// METRICS
 // =========================
 
 // Response time

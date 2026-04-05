@@ -36,7 +36,7 @@ async function startServer() {
 	await connectDB();
 	const db = getDB();
 
-	// ✅ UNA sola instancia de Yoga con métricas
+	// Yoga con métricas
 	const yoga = createYoga({
 		schema,
 
@@ -62,29 +62,29 @@ async function startServer() {
 
 							const duration = performance.now() - req.startTime;
 
-							// 📊 RESPONSE TIME
+							// RESPONSE TIME
 							httpRequestDuration.observe(duration);
 
-							// 📊 THROUGHPUT
+							// THROUGHPUT
 							httpRequestsTotal.inc();
 
-							// 📊 PAYLOAD SIZE
+							// PAYLOAD SIZE
 							const size = Buffer.byteLength(JSON.stringify(result));
 							payloadSize.observe(size);
 
-							// 📊 TTFB
+							// TTFB
 							ttfbMetric.observe(performance.now() - ttfbStart);
 
-							// 📊 CPU
+							// CPU
 							const cpuEnd = process.cpuUsage(req.cpuStart);
 							const cpuMs = (cpuEnd.user + cpuEnd.system) / 1000;
 							cpuUsage.set(cpuMs);
 
-							// 📊 MEMORY
+							// MEMORY
 							const mem = process.memoryUsage().heapUsed;
 							memoryUsage.set(mem);
 
-							// 📊 ERRORS
+							// ERRORS
 							if (result.errors) {
 								errorsTotal.inc(result.errors.length);
 							}
@@ -106,7 +106,7 @@ async function startServer() {
 	app.use('/rest/productos', productoRoutes);
 	app.use('/rest/variaciones', variacionRoutes);
 
-	// 📊 METRICS ENDPOINT (Prometheus)
+	// METRICS ENDPOINT (Prometheus)
 	app.get('/metrics', async (req, res) => {
 		res.set('Content-Type', client.register.contentType);
 		res.end(await client.register.metrics());
@@ -116,7 +116,8 @@ async function startServer() {
 		console.log(`Servidor corriendo en puerto ${PORT}`);
 		console.log(`GraphQL: http://localhost:${PORT}/graphql`);
 		console.log(`REST: http://localhost:${PORT}/rest`);
-		console.log(`Metrics: http://localhost:${PORT}/metrics`);
+		console.log(`Prometheus: http://localhost:9090`);
+		console.log(`Grafana: http://localhost:3000`);
 	});
 }
 
