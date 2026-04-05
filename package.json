@@ -20,6 +20,7 @@
   "homepage": "https://github.com/FranciscoJavierSV/Proyecto_Investigacion#readme",
   "dependencies": {
     "cors": "^2.8.6",
+    "dotenv": "^17.4.0",
     "express": "^5.2.1",
     "graphql": "^16.13.1",
     "graphql-type-json": "^0.3.2",

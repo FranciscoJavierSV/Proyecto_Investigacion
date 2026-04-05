@@ -1,23 +1,24 @@
 const { MongoClient } = require('mongodb');
 
-const uri = 'mongodb://localhost:27017';
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 
 async function connectDB() {
-	try {
-
-		await client.connect();
-
-		console.log('MongoDB conectado');
-
-		return client.db('baseDR');
-
-	} catch (error) {
-
-		console.error('Error conectando a MongoDB:', error);
-		process.exit(1);
-
-	}
+    try {
+        await client.connect();
+        console.log('MongoDB conectado');
+        db = client.db(process.env.CLIENTDB);
+    } catch (error) {
+        console.error('Error conectando a MongoDB:', error);
+        process.exit(1);
+    }
 }
 
-module.exports = { connectDB };
+function getDB() {
+    if (!db) {
+        throw new Error('Base de datos no inicializada. Llama a connectDB primero.')
+    }
+    return db;
+}
+
+module.exports = { connectDB, getDB };
