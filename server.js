@@ -16,7 +16,7 @@ const {
 	errorsTotal,
 	cpuUsage,
 	memoryUsage
-} = require('./metrics');
+} = require('./config/metrics');
 
 // REST ROUTES
 const allRoutes = require('./restapi/routes/all.routes');
@@ -58,35 +58,39 @@ async function startServer() {
 					return {
 						onExecuteDone({ result, args }) {
 
+							const labels = {
+								api_type: 'graphql'
+							};
+
 							const req = args.contextValue.request;
 
 							const duration = performance.now() - req.startTime;
 
 							// RESPONSE TIME
-							httpRequestDuration.observe(duration);
+							httpRequestDuration.labels(labels).observe(duration);
 
 							// THROUGHPUT
-							httpRequestsTotal.inc();
+							httpRequestsTotal.labels(labels).inc();
 
 							// PAYLOAD SIZE
 							const size = Buffer.byteLength(JSON.stringify(result));
-							payloadSize.observe(size);
+							payloadSize.labels(labels).observe(size);
 
 							// TTFB
-							ttfbMetric.observe(performance.now() - ttfbStart);
+							ttfbMetric.labels(labels).observe(performance.now() - ttfbStart);
 
 							// CPU
 							const cpuEnd = process.cpuUsage(req.cpuStart);
 							const cpuMs = (cpuEnd.user + cpuEnd.system) / 1000;
-							cpuUsage.set(cpuMs);
+							cpuUsage.labels(labels).set(cpuMs);
 
 							// MEMORY
 							const mem = process.memoryUsage().heapUsed;
-							memoryUsage.set(mem);
+							memoryUsage.labels(labels).set(mem);
 
 							// ERRORS
 							if (result.errors) {
-								errorsTotal.inc(result.errors.length);
+								errorsTotal.labels(labels).inc(result.errors.length);
 							}
 						}
 					};

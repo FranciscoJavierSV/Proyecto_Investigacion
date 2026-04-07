@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { performance } = require("perf_hooks");
 const { getDB } = require('../../config/db');
+const { metricsMiddleware } = require('../../config/metrics');
+
+router.use(metricsMiddleware);
 
 // GET ALL ELEMENTS AT ONCE
 router.get('/', async (req, res) => {
