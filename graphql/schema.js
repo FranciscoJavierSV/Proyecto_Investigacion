@@ -24,27 +24,22 @@ const typeDefs = /* GraphQL */ `
 
 	type PaginatedClientes {
 		data: [Cliente]
-		total: Int
 	}
 
 	type PaginatedFacturas {
 		data: [Factura]
-		total: Int
 	}
 
 	type PaginatedDatosFacturas {
 		data: [DatosFactura]
-		total: Int
 	}
 
 	type PaginatedProductos {
 		data: [Producto]
-		total: Int
 	}
 
 	type PaginatedVariaciones {
 		data: [Variacion]
-		total: Int
 	}
 
 	# =========================

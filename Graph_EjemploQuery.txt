@@ -3,7 +3,6 @@ query {
 		tiempoMs
 
 		clientes {
-			total
 			data {
 				_id
 				nombre
@@ -15,7 +14,6 @@ query {
 		}
 
 		facturas {
-			total
 			data {
 				_id
 				_idCliente
@@ -26,7 +24,6 @@ query {
 		}
 
 		datosfacturas {
-			total
 			data {
 				_id
 				_idFactura
@@ -37,7 +34,6 @@ query {
 		}
 
 		productos {
-			total
 			data {
 				_id
 				nombre
@@ -48,7 +44,6 @@ query {
 		}
 
 		variaciones {
-			total
 			data {
 				_id
 				nombre

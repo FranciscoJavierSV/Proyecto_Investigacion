@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
   try {
     const db = getDB();
     const limit = parseInt(req.query.size) || 0;
+    const offset = parseInt(req.query.offset) || 0;
     const timeStart = performance.now();
     
     const [
@@ -20,11 +21,11 @@ router.get('/', async (req, res) => {
         productos,
         variaciones
     ] = await Promise.all([
-        db.collection('clientes').find({}).limit(limit).toArray(),
-        db.collection('datosfacturas').find({}).limit(limit).toArray(),
-        db.collection('facturas').find({}).limit(limit).toArray(),
-        db.collection('productos').find({}).limit(limit).toArray(),
-        db.collection('variaciones').find({}).limit(limit).toArray()
+        db.collection('clientes').find({}).skip(offset).limit(limit).toArray(),
+        db.collection('datosfacturas').find({}).skip(offset).limit(limit).toArray(),
+        db.collection('facturas').find({}).skip(offset).limit(limit).toArray(),
+        db.collection('productos').find({}).skip(offset).limit(limit).toArray(),
+        db.collection('variaciones').find({}).skip(offset).limit(limit).toArray()
     ]);
 
     const timeEnd = performance.now();

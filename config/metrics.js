@@ -1,5 +1,6 @@
 const client = require('prom-client');
 const { performance } = require("perf_hooks");
+const { writeMetricsLog } = require('../logs/logger');
 
 const register = new client.Registry();
 
@@ -64,6 +65,7 @@ const memoryUsage = new client.Gauge({
 // Middleware (REST API only!)
 const metricsMiddleware = (req, res, next) => {
 	const endTimer = httpRequestDuration.startTimer();
+	const startCpu = process.cpuUsage();
 
 	res.on('finish', () => {
 		const labels = {
@@ -89,6 +91,20 @@ const metricsMiddleware = (req, res, next) => {
 		if (res.statusCode >= 500) {
 			errorsTotal.labels(labels).inc();
 		}
+		const endCpu = process.cpuUsage(startCpu);
+        const cpuMs = (endCpu.user + endCpu.system) / 1000;
+        const mem = process.memoryUsage().heapUsed;
+        const durationMs = timer * 1000; 
+
+        writeMetricsLog({
+            queryName: `REST - ${req.method} ${req.originalUrl}`,
+            responseTime: durationMs.toFixed(2),
+            ttfb: durationMs.toFixed(2),
+            payloadSize: parseInt(contentLength) || 0,
+            cpuUsage: cpuMs.toFixed(2),
+            memoryUsage: mem,
+            errors: res.statusCode >= 400 ? 1 : 0
+        });
 	});
 
 	next();
