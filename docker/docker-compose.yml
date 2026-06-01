@@ -7,8 +7,8 @@ services:
     container_name: prometheus
     ports:
       - "9090:9090"
-    extra_hosts:
-      - "host.docker.internal:172.17.0.1" # Map to host IP (Linux hosts only!)
+    #extra_hosts:
+      #- "host.docker.internal:172.17.0.1" # Map to host IP (Linux hosts only!)
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:z # :z flag is required on Linux distros with SELinux enabled. Other systems shouldn't be affected
     restart: unless-stopped

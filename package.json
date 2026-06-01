@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/FranciscoJavierSV/Proyecto_Investigacion#readme",
   "dependencies": {
+    "artillery": "^2.0.32",
     "cors": "^2.8.6",
     "dotenv": "^17.4.0",
     "express": "^5.2.1",

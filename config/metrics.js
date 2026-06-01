@@ -48,6 +48,9 @@ const errorsTotal = new client.Counter({
 	labelNames: ['api_type']
 });
 
+errorsTotal.labels({ api_type: 'rest' }).inc(0);
+errorsTotal.labels({ api_type: 'graphql' }).inc(0);
+
 // CPU usage
 const cpuUsage = new client.Gauge({
 	name: 'cpu_usage_percent',
@@ -95,6 +98,9 @@ const metricsMiddleware = (req, res, next) => {
         const cpuMs = (endCpu.user + endCpu.system) / 1000;
         const mem = process.memoryUsage().heapUsed;
         const durationMs = timer * 1000; 
+
+		cpuUsage.labels(labels).set(cpuMs);
+		memoryUsage.labels(labels).set(mem);
 
         writeMetricsLog({
             queryName: `REST - ${req.method} ${req.originalUrl}`,

@@ -1,9 +1,9 @@
 config:
   target: "http://localhost:4000"
   phases:
-    - duration: 15
-      arrivalRate: 500
-      name: "Prueba de carga REST con 500 req/sec"
+    - duration: 30
+      arrivalRate: 100
+      name: "Prueba de carga REST con 100 req/sec"
 
 scenarios:
   - name: "Consultar REST"
@@ -12,4 +12,4 @@ scenarios:
           url: "/rest/?size=50&offset=0"
           expect:
             - statusCode: 200
-# artillery run concurrencia-rest.yml
+# npx artillery run concurrencia-rest.yml

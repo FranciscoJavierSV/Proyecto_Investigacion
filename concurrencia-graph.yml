@@ -65,4 +65,4 @@ scenarios:
           expect:
             - statusCode: 200
 
-# artillery run concurrencia-graph.yml
+# npx artillery run concurrencia-graph.yml
