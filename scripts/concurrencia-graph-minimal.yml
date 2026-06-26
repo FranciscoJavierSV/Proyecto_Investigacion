@@ -1,0 +1,27 @@
+config:
+  target: "http://localhost:4000"
+  phases:
+    - duration: 300
+      arrivalRate: 10
+      name: "GraphQL minimal fields - 10 req/sec for 5 min"
+
+scenarios:
+  - name: "GraphQL minimal"
+    flow:
+      - post:
+          url: "/graphql"
+          json:
+            query: |
+              query {
+                obtenerDataset(input: { limit: 50 }) {
+                  clientes {
+                    data {
+                      _id nombre correo
+                    }
+                  }
+                }
+              }
+          expect:
+            - statusCode: 200
+
+# Run: npx artillery run scripts/concurrencia-graph-minimal.yml -o logs/artillery_graph_minimal.json

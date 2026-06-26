@@ -48,6 +48,9 @@ const errorsTotal = new client.Counter({
 	labelNames: ['api_type']
 });
 
+errorsTotal.labels({ api_type: 'rest' }).inc(0);
+errorsTotal.labels({ api_type: 'graphql' }).inc(0);
+
 // CPU usage
 const cpuUsage = new client.Gauge({
 	name: 'cpu_usage_percent',
@@ -66,6 +69,28 @@ const memoryUsage = new client.Gauge({
 const metricsMiddleware = (req, res, next) => {
 	const endTimer = httpRequestDuration.startTimer();
 	const startCpu = process.cpuUsage();
+	let responseSize = 0;
+
+	const originalWrite = res.write;
+	const originalEnd = res.end;
+
+	res.write = function (chunk, encoding, callback) {
+		if (chunk) {
+			responseSize += Buffer.isBuffer(chunk)
+				? chunk.length
+				: Buffer.byteLength(chunk, encoding);
+		}
+		return originalWrite.call(this, chunk, encoding, callback);
+	};
+
+	res.end = function (chunk, encoding, callback) {
+		if (chunk) {
+			responseSize += Buffer.isBuffer(chunk)
+				? chunk.length
+				: Buffer.byteLength(chunk, encoding);
+		}
+		return originalEnd.call(this, chunk, encoding, callback);
+	};
 
 	res.on('finish', () => {
 		const labels = {
@@ -79,9 +104,8 @@ const metricsMiddleware = (req, res, next) => {
 		const timer = endTimer(labels);
 
 		// Payload size
-		const contentLength = res.get('Content-Length');
-		if (contentLength) {
-			payloadSize.labels(labels).observe(parseInt(contentLength));
+		if (responseSize > 0) {
+			payloadSize.labels(labels).observe(responseSize);
 		}
 
 		// TTFB
@@ -96,11 +120,14 @@ const metricsMiddleware = (req, res, next) => {
         const mem = process.memoryUsage().heapUsed;
         const durationMs = timer * 1000; 
 
+		cpuUsage.labels(labels).set(cpuMs);
+		memoryUsage.labels(labels).set(mem);
+
         writeMetricsLog({
             queryName: `REST - ${req.method} ${req.originalUrl}`,
             responseTime: durationMs.toFixed(2),
             ttfb: durationMs.toFixed(2),
-            payloadSize: parseInt(contentLength) || 0,
+            payloadSize: responseSize,
             cpuUsage: cpuMs.toFixed(2),
             memoryUsage: mem,
             errors: res.statusCode >= 400 ? 1 : 0

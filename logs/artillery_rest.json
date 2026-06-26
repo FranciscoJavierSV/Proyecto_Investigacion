@@ -1,0 +1,99 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.Consultar REST": 750,
+      "vusers.created": 750,
+      "http.requests": 750,
+      "plugins.metrics-by-endpoint./rest/.errors.ERR_SOCKET_TIMEOUT": 750,
+      "errors.ERR_SOCKET_TIMEOUT": 750,
+      "vusers.failed": 750
+    },
+    "rates": {
+      "http.request_rate": 34
+    },
+    "firstCounterAt": 1782315035870,
+    "lastCounterAt": 1782315064353,
+    "firstMetricAt": 1782315035870,
+    "lastMetricAt": 1782315064353,
+    "period": 1782315060000,
+    "summaries": {},
+    "histograms": {}
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.Consultar REST": 221,
+        "vusers.created": 221,
+        "http.requests": 221
+      },
+      "rates": {
+        "http.request_rate": 56
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1782315035870,
+      "lastCounterAt": 1782315039996,
+      "firstMetricAt": 1782315035870,
+      "lastMetricAt": 1782315039996,
+      "period": "1782315030000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Consultar REST": 500,
+        "vusers.created": 500,
+        "http.requests": 500,
+        "plugins.metrics-by-endpoint./rest/.errors.ERR_SOCKET_TIMEOUT": 321,
+        "errors.ERR_SOCKET_TIMEOUT": 321,
+        "vusers.failed": 321
+      },
+      "rates": {
+        "http.request_rate": 50
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1782315040014,
+      "lastCounterAt": 1782315049997,
+      "firstMetricAt": 1782315040014,
+      "lastMetricAt": 1782315049997,
+      "period": "1782315040000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Consultar REST": 29,
+        "vusers.created": 29,
+        "http.requests": 29,
+        "plugins.metrics-by-endpoint./rest/.errors.ERR_SOCKET_TIMEOUT": 395,
+        "errors.ERR_SOCKET_TIMEOUT": 395,
+        "vusers.failed": 395
+      },
+      "rates": {
+        "http.request_rate": 29
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1782315050016,
+      "lastCounterAt": 1782315059722,
+      "firstMetricAt": 1782315050016,
+      "lastMetricAt": 1782315059722,
+      "period": "1782315050000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "plugins.metrics-by-endpoint./rest/.errors.ERR_SOCKET_TIMEOUT": 34,
+        "errors.ERR_SOCKET_TIMEOUT": 34,
+        "vusers.failed": 34
+      },
+      "rates": {},
+      "firstCounterAt": 1782315061346,
+      "lastCounterAt": 1782315064353,
+      "firstMetricAt": 1782315061346,
+      "lastMetricAt": 1782315064353,
+      "period": "1782315060000",
+      "summaries": {},
+      "histograms": {}
+    }
+  ]
+}

@@ -18,6 +18,9 @@ const {
 	memoryUsage
 } = require('./config/metrics');
 
+// metrics middleware for REST
+const { metricsMiddleware } = require('./config/metrics');
+
 // REST ROUTES
 const allRoutes = require('./restapi/routes/all.routes');
 const clienteRoutes = require('./restapi/routes/cliente.routes');
@@ -167,6 +170,9 @@ async function startServer() {
 
 	// GRAPHQL
 	app.use('/graphql', yoga);
+
+	// METRICS MIDDLEWARE for REST (collect metrics, logs)
+	app.use(metricsMiddleware);
 
 	// MIDDLEWARE PARA RAM MAXIMA EN REST
 	app.use((req, res, next) => {

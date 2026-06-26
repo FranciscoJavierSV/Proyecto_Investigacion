@@ -1,0 +1,26 @@
+config:
+  target: "http://localhost:4000"
+  phases:
+    - duration: 30
+      arrivalRate: 50
+      name: "Prueba de carga GraphQL con 50 req/sec"
+
+scenarios:
+  - name: "Consultar GraphQL"
+    flow:
+      - post:
+          url: "/graphql"
+          json:
+            query: |
+              query {
+                obtenerDataset(input: { limit: 50 }) {
+                  tiempoMs
+                  clientes {
+                    data { _id }
+                  }
+                }
+              }
+          expect:
+            - statusCode: 200
+
+# Run: npx artillery run scripts/concurrencia-graph.yml -o logs/artillery_graph.json

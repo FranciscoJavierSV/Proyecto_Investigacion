@@ -1,0 +1,66 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.Consultar REST": 750,
+      "vusers.created": 750,
+      "http.requests": 750,
+      "plugins.metrics-by-endpoint./rest/.errors.ECONNREFUSED": 750,
+      "errors.ECONNREFUSED": 750,
+      "vusers.failed": 750
+    },
+    "rates": {
+      "http.request_rate": 50
+    },
+    "firstCounterAt": 1782320851440,
+    "lastCounterAt": 1782320866421,
+    "firstMetricAt": 1782320851440,
+    "lastMetricAt": 1782320866421,
+    "period": 1782320860000,
+    "summaries": {},
+    "histograms": {}
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.Consultar REST": 429,
+        "vusers.created": 429,
+        "http.requests": 429,
+        "plugins.metrics-by-endpoint./rest/.errors.ECONNREFUSED": 429,
+        "errors.ECONNREFUSED": 429,
+        "vusers.failed": 429
+      },
+      "rates": {
+        "http.request_rate": 50
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1782320851440,
+      "lastCounterAt": 1782320859999,
+      "firstMetricAt": 1782320851440,
+      "lastMetricAt": 1782320859999,
+      "period": "1782320850000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.Consultar REST": 321,
+        "vusers.created": 321,
+        "http.requests": 321,
+        "plugins.metrics-by-endpoint./rest/.errors.ECONNREFUSED": 321,
+        "errors.ECONNREFUSED": 321,
+        "vusers.failed": 321
+      },
+      "rates": {
+        "http.request_rate": 50
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1782320860016,
+      "lastCounterAt": 1782320866421,
+      "firstMetricAt": 1782320860016,
+      "lastMetricAt": 1782320866421,
+      "period": "1782320860000",
+      "summaries": {},
+      "histograms": {}
+    }
+  ]
+}
