@@ -1,68 +1,45 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Simple benchmark runner (host). Requirements: curl, jq. Artillery optional (npx artillery).
-# Run from host: ./scripts/benchmark.sh
+BASE_URL="http://localhost:4000"
+REST_CLIENTE_URL="$BASE_URL/rest/insert/cliente"
+GRAPHQL_URL="$BASE_URL/graphql"
+REPEAT=${1:-20}
 
-ROOT_DIR="/home/javi/Proyecto_Investigacion"
-DOCKER_DIR="$ROOT_DIR/docker"
-METRICS_FILE="$ROOT_DIR/logs/metrics.jsonl"
-OUT_LOG="$ROOT_DIR/logs/benchmark_runs.log"
+printf "Benchmark REST vs GraphQL inserts (%s requests each)\n" "$REPEAT"
 
-mkdir -p "$ROOT_DIR/logs"
-echo "Benchmark run started: $(date -Iseconds)" >> "$OUT_LOG"
-
-echo "Starting docker stack..."
-cd "$DOCKER_DIR"
-docker-compose up --build -d
-
-echo "Waiting for app to be ready (checking logs)..."
-ready=false
-for i in {1..30}; do
-  if docker logs proyecto_app 2>&1 | grep -q "Servidor corriendo"; then
-    ready=true
-    break
-  fi
-  sleep 2
-done
-if [ "$ready" = false ]; then
-  echo "Warning: app did not show ready log. Proceeding anyway." | tee -a "$OUT_LOG"
-fi
-
-SIZES=(10 100 1000 5000 10000)
-ITER=3
-
-for size in "${SIZES[@]}"; do
-  echo "--- size=$size ---" | tee -a "$OUT_LOG"
-  for i in $(seq 1 $ITER); do
-    ts=$(date -Iseconds)
-    rest_out=$(curl -s -w "%{http_code} %{time_total}" -o /dev/null "http://localhost:4000/rest/?size=${size}") || rest_out="ERR"
-    echo "$ts REST size=$size iter=$i $rest_out" | tee -a "$OUT_LOG"
-
-    gql_payload=$(cat <<EOF
-{"query":"query { obtenerDataset(input: { limit: ${size} }) { clientes { data { _id } } } }"}
-EOF
-)
-    gql_out=$(curl -s -X POST http://localhost:4000/graphql -H 'Content-Type: application/json' -d "$gql_payload" -w " %{http_code} %{time_total}" -o /dev/null) || gql_out="ERR"
-    echo "$ts GRAPHQL limit=$size iter=$i $gql_out" | tee -a "$OUT_LOG"
-    sleep 1
-  done
+time_rest=0
+count_rest=0
+for i in $(seq 1 "$REPEAT"); do
+  start=$(date +%s%3N)
+  curl -sS -X POST -H 'Content-Type: application/json' -d '{"nombre":"Cliente'$i'","email":"cliente'$i'@example.com","ciudad":"Ciudad'$i'"}' "$REST_CLIENTE_URL" >/dev/null
+  end=$(date +%s%3N)
+  delta=$((end - start))
+  time_rest=$((time_rest + delta))
+  count_rest=$((count_rest + 1))
 done
 
-echo "Optional: running Artillery concurrency tests if npx available..." | tee -a "$OUT_LOG"
-cd "$ROOT_DIR"
-if command -v npx >/dev/null 2>&1; then
-  echo "Running concurrency REST (concurrencia-rest.yml)" | tee -a "$OUT_LOG"
-  npx artillery run scripts/concurrencia-rest.yml | tee -a "$OUT_LOG"
-  echo "Running concurrency GraphQL (concurrencia-graph.yml)" | tee -a "$OUT_LOG"
-  npx artillery run scripts/concurrencia-graph.yml | tee -a "$OUT_LOG"
-else
-  echo "npx not found on host. To run Artillery inside the container, execute:" | tee -a "$OUT_LOG"
-  echo "  docker exec -it proyecto_app npx artillery run /usr/src/app/scripts/concurrencia-rest.yml" | tee -a "$OUT_LOG"
-  echo "  docker exec -it proyecto_app npx artillery run /usr/src/app/scripts/concurrencia-graph.yml" | tee -a "$OUT_LOG"
-fi
+export LC_ALL=C
+printf "REST inserts: %s requests completed\n" "$count_rest"
+printf "REST total time: %sms\n" "$time_rest"
+rest_avg=$(awk "BEGIN { printf \"%.2f\", $time_rest / $count_rest }")
+printf "REST avg latency: %sms\n" "$rest_avg"
 
-echo "Benchmark finished: $(date -Iseconds)" | tee -a "$OUT_LOG"
-echo "Logs: $OUT_LOG" | tee -a "$OUT_LOG"
+time_graphql=0
+count_graphql=0
+for i in $(seq 1 "$REPEAT"); do
+  start=$(date +%s%3N)
+  curl -sS -X POST -H 'Content-Type: application/json' -d '{"query":"mutation { insertCliente(nombre:\"GraphQL '$i'\", email:\"graphql'$i'@example.com\", ciudad:\"Ciudad '$i'\"){success message insertedId}}"}' "$GRAPHQL_URL" >/dev/null
+  end=$(date +%s%3N)
+  delta=$((end - start))
+  time_graphql=$((time_graphql + delta))
+  count_graphql=$((count_graphql + 1))
+done
 
-exit 0
+printf "GraphQL inserts: %s requests completed\n" "$count_graphql"
+printf "GraphQL total time: %sms\n" "$time_graphql"
+graphql_avg=$(awk "BEGIN { printf \"%.2f\", $time_graphql / $count_graphql }")
+printf "GraphQL avg latency: %sms\n" "$graphql_avg"
+
+printf "\nFetching current /metrics snapshot...\n"
+curl -sS "$BASE_URL/metrics" | tail -n 40

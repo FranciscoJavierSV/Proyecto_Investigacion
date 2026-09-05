@@ -1,0 +1,98 @@
+{
+  "uid": "rest-graphql-comparison",
+  "title": "Insertion Comparison - REST vs GraphQL (Mutations)",
+  "tags": ["comparison","insertion"],
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Latency p50 (ms) REST vs GraphQL",
+      "id": 1,
+      "gridPos": {"x": 0, "y": 0, "w": 24, "h": 8},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(api_rest_latency_ms_bucket[1m])) by (le))",
+          "legendFormat": "REST - p50",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(api_graphql_latency_ms_bucket[1m])) by (le))",
+          "legendFormat": "GraphQL - p50",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Latency p95 (ms) REST vs GraphQL",
+      "id": 2,
+      "gridPos": {"x": 0, "y": 8, "w": 24, "h": 8},
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(api_rest_latency_ms_bucket[1m])) by (le))", "legendFormat": "REST - p95", "refId": "A", "datasource": { "uid": "prometheus-integrated", "type": "prometheus" } },
+        { "expr": "histogram_quantile(0.95, sum(rate(api_graphql_latency_ms_bucket[1m])) by (le))", "legendFormat": "GraphQL - p95", "refId": "B", "datasource": { "uid": "prometheus-integrated", "type": "prometheus" } }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Insertion Rate (ops/sec)",
+      "id": 3,
+      "gridPos": {"x": 0, "y": 16, "w": 24, "h": 8},
+      "targets": [
+        { "expr": "sum(rate(api_rest_inserts_total[1m]))", "legendFormat": "REST inserts/s", "refId": "A", "datasource": { "uid": "prometheus-integrated", "type": "prometheus" } },
+        { "expr": "sum(rate(api_graphql_inserts_total[1m]))", "legendFormat": "GraphQL inserts/s", "refId": "B", "datasource": { "uid": "prometheus-integrated", "type": "prometheus" } }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Error Rate (errors/sec)",
+      "id": 4,
+      "gridPos": {"x": 0, "y": 24, "w": 24, "h": 8},
+      "targets": [
+        { "expr": "sum(rate(api_rest_errors_total[1m]))", "legendFormat": "REST errors/s", "refId": "A", "datasource": { "uid": "prometheus-integrated", "type": "prometheus" } },
+        { "expr": "sum(rate(api_graphql_errors_total[1m]))", "legendFormat": "GraphQL errors/s", "refId": "B", "datasource": { "uid": "prometheus-integrated", "type": "prometheus" } }
+      ]
+    }
+,
+    {
+      "type": "timeseries",
+      "title": "Latency p99 (ms) REST vs GraphQL",
+      "id": 5,
+      "gridPos": {"x": 0, "y": 32, "w": 24, "h": 8},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(api_rest_latency_ms_bucket[1m])) by (le))",
+          "legendFormat": "REST - p99",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(api_graphql_latency_ms_bucket[1m])) by (le))",
+          "legendFormat": "GraphQL - p99",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "% Time in DB (by api_type)",
+      "id": 6,
+      "gridPos": {"x": 0, "y": 40, "w": 24, "h": 8},
+      "targets": [
+        {
+          "expr": "sum(rate(db_fetch_duration_ms_sum[5m])) by (api_type) / sum(rate(http_request_duration_ms_sum[5m])) by (api_type)",
+          "legendFormat": "{{api_type}}",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    }
+  ],
+  "refresh": "5s", 
+  "time": { "from": "now-1h", "to": "now" },
+  "folderId": 0
+}

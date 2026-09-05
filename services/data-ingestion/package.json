@@ -1,0 +1,24 @@
+{
+  "name": "baseDR-data-ingestion",
+  "version": "1.0.0",
+  "description": "Data ingestion with Kafka, seeders and consumer",
+  "main": "src/seeders/seed_all.js",
+  "scripts": {
+    "seed": "node src/seeders/seed_all.js",
+    "seed:clientes": "node src/seeders/seed_clientes_parallel.js",
+    "seed:productos": "node src/seeders/seed_productos_parallel.js",
+    "seed:variaciones": "node src/seeders/seed_variaciones_parallel.js",
+    "seed:facturas": "node src/seeders/seed_facturas_parallel.js",
+    "seed:datosfacturas": "node src/seeders/seed_datosfacturas_parallel.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@faker-js/faker": "^10.3.0",
+    "kafkajs": "^2.2.4",
+    "minimist": "^1.2.8",
+    "mongodb": "^7.1.0",
+    "prom-client": "^14.0.0"
+  }
+}

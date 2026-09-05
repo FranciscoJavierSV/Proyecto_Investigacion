@@ -1,3 +1,6 @@
-node_modules/
 .env
-logs/Historial_metricas.log
+node_modules/
+data/
+kafka_logs/
+services/research-api/logs/*.log
+services/research-api/logs/*.jsonl

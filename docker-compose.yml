@@ -1,0 +1,175 @@
+services:
+  kafka:
+    image: apache/kafka:latest
+    profiles: [core, seed]
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092,CONTROLLER://kafka:29093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      CLUSTER_ID: 4L6g3nShT-eMCtK--X86sw
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_LOG_MESSAGE_MAX_BYTES: ${KAFKA_LOG_MESSAGE_MAX_BYTES}
+      KAFKA_REPLICA_FETCH_MAX_BYTES: ${KAFKA_REPLICA_FETCH_MAX_BYTES}
+      KAFKA_MESSAGE_MAX_BYTES: ${KAFKA_LOG_MESSAGE_MAX_BYTES}
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/bin/bash -c '</dev/tcp/kafka/9092'"]
+      interval: 5s
+      timeout: 2s
+      retries: 12
+      start_period: 15s
+
+  consumer:
+    build: ./services/data-ingestion
+    profiles: [core, seed]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      DB_NAME: ${DB_NAME:-baseDR}
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_TOPIC: ${KAFKA_TOPIC}
+      KAFKA_GROUP_ID: ${KAFKA_GROUP_ID}
+      CONSUMER_BATCH_SIZE: ${CONSUMER_BATCH_SIZE}
+      METRICS_PORT: 9464
+    command: ["node", "src/kafka/consumer.js"]
+    ports:
+      - "${CONSUMER_METRICS_PORT:-9464}:9464"
+    depends_on:
+      topic-init:
+        condition: service_completed_successfully
+    volumes:
+      - ./data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  topic-init:
+    image: apache/kafka:latest
+    profiles: [core, seed]
+    command:
+      - /bin/bash
+      - -c
+      - >-
+        set -e;
+        /opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092
+        --create --if-not-exists --topic "${KAFKA_TOPIC:-data}"
+        --partitions 1 --replication-factor 1 >/dev/null 2>&1;
+        until /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-server
+        kafka:9092 --describe --group readiness-check 2>&1 |
+        grep -q 'GroupIdNotFoundException'; do sleep 2; done
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  seed:
+    build: ./services/data-ingestion
+    profiles: [seed]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      DB_NAME: ${DB_NAME:-baseDR}
+      SEED_N: ${SEED_N}
+      SEED_BATCH: ${SEED_BATCH}
+      SEED_WORKERS: ${SEED_WORKERS}
+      KAFKA_BROKERS: kafka:9092
+      KAFKA_TOPIC: ${KAFKA_TOPIC}
+    command: ["node", "src/seeders/seed_all.js"]
+    depends_on:
+      topic-init:
+        condition: service_completed_successfully
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  api-comparison:
+    build: ./services/api-comparison
+    profiles: [comparison]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      DB_NAME: ${DB_NAME:-baseDR}
+      DATA_DIR: /app/data
+      NODE_ENV: production
+      PORT: 4000
+    ports:
+      - "${COMPARISON_PORT:-4000}:4000"
+    volumes:
+      - ./data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  research-api:
+    build: ./services/research-api
+    profiles: [research]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      MONGO_URI: ${MONGO_URI}
+      CLIENTDB: ${CLIENTDB:-baseDR}
+      PORT: 4000
+    ports:
+      - "${RESEARCH_PORT:-4001}:4000"
+    volumes:
+      - ./services/research-api/logs:/usr/src/app/logs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  tools:
+    build:
+      context: .
+      dockerfile: services/tools/Dockerfile
+    profiles: [tools]
+    environment:
+      DATA_DIR: /app/data
+    volumes:
+      - ./data:/app/data
+      - ./services/research-api/logs:/app/logs
+      - ./scripts:/app/scripts:ro
+
+  prometheus:
+    image: prom/prometheus:latest
+    profiles: [monitoring]
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+
+  grafana:
+    image: grafana/grafana:latest
+    profiles: [monitoring]
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/dashboards:/var/lib/grafana/dashboards:ro
+      - ./monitoring/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+
+volumes:
+  kafka_data:
+  prometheus_data:
+  grafana_data:
