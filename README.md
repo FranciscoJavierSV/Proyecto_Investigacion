@@ -9,9 +9,9 @@ MongoDB es una dependencia configurable. Puede ser local o estar en otro servido
 ## Preparacion
 
 ```bash
-cd /home/deriker/ProyectoSS/BaseDR_Docker
+cd <ruta_del_proyecto>
 cp .env.example .env
-# Editar solamente .env con los valores reales del tunel
+# Editar solamente .env con los valores reales del túnel o credenciales locales (NO subir .env)
 ```
 
 La URI debe ser alcanzable desde los contenedores. Para una Mongo instalada en el mismo equipo puede usarse `host.docker.internal` en lugar de `localhost`.
@@ -31,7 +31,14 @@ Servicios publicados:
 - Prometheus: http://localhost:9090
 - Grafana: http://localhost:3000 (admin/admin)
 
-Grafana carga automáticamente los tres dashboards de `monitoring/dashboards/`.
+Grafana carga automáticamente cuatro dashboards provisionados en `monitoring/dashboards/`. Los dashboards incluidos (accesibles en http://localhost:3000 cuando Grafana esté arriba) son:
+
+- Insertion - REST (Carga masiva) — mide Ingestion/Consumer/Kafka/MongoDB. UID/URL de ejemplo: /d/consumer-metrics-dashboard/insertion-rest-carga-masiva
+- Insertion Comparison - REST vs GraphQL (Mutations) — compara REST vs GraphQL. UID/URL de ejemplo: /d/rest-graphql-comparison/insertion-comparison-rest-vs-graphql-mutations
+- Queries - GraphQL — UID/URL de ejemplo: /d/adlr9tc/queries-graphql
+- Queries - REST — UID/URL de ejemplo: /d/rest-api-dashboard/queries-rest
+
+Ajusta los slugs/UID si tu instancia de Grafana generó identificadores distintos.
 
 ## Generar datos
 
