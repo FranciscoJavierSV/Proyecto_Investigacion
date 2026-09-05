@@ -1,6 +1,18 @@
 # BaseDR Docker integrado
 
-Unifica la ingesta Kafka, las dos APIs y el monitoreo en un solo proyecto Docker. Los proyectos originales no forman parte de esta carpeta y no se modifican.
+Resumen rápido:
+
+- Qué es: proyecto Docker que integra la ingesta (Kafka + consumer), las APIs (REST y GraphQL) y la pila de monitoreo (Prometheus + Grafana) para facilitar pruebas y demostraciones.
+- Objetivo: levantar localmente todo el conjunto de servicios con un único comando para probar comparativas y métricas.
+- Inicio rápido (desde la raíz del proyecto):
+
+  ```bash
+  cd <ruta_del_proyecto>
+  docker compose --profile core --profile comparison --profile research --profile monitoring up --build -d
+  ```
+
+- Dashboards: 4 dashboards provisionados (ver MANUAL_USUARIO.md para descripciones y URLs).
+- Manual detallado: seguir MANUAL_USUARIO.md y MANUAL_COMANDOS.md para procedimientos paso a paso, comandos y verificación de métricas.
 
 ## Dependencia externa
 
