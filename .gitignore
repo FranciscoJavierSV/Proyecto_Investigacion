@@ -5,3 +5,4 @@ data/*
 kafka_logs/
 services/research-api/logs/*
 !services/research-api/logs/.gitkeep
+!services/research-api/logs/logger.js
