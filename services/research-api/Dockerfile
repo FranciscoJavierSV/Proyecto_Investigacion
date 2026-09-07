@@ -1,6 +1,7 @@
 FROM node:22-slim
 
 WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/app/logs
 
 COPY package*.json ./
 RUN npm pkg delete dependencies.artillery \
