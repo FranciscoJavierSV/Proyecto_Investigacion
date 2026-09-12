@@ -44,7 +44,27 @@ if "%CMD%"=="benchmark" (
   call scripts\benchmark.sh %*
   goto :EOF
 )
+if "%CMD%"=="query" (
+  node scripts\query.js %*
+  goto :EOF
+)
+if "%CMD%"=="benchmark-queries" (
+  node scripts\benchmark_queries.js %*
+  goto :EOF
+)
+if "%CMD%"=="benchmark-query" (
+  node scripts\benchmark_queries.js %*
+  goto :EOF
+)
+if "%CMD%"=="scalability" (
+  node scripts\scalability_test.js %*
+  goto :EOF
+)
+if "%CMD%"=="overfetching" (
+  node scripts\overfetching_test.js %*
+  goto :EOF
+)
 :HELP
 echo Usage: run.bat ^<action^>
-echo Actions: setup check clean all test aggregate benchmark
+echo Actions: setup check clean all test query benchmark benchmark-queries scalability overfetching aggregate
 :EOF

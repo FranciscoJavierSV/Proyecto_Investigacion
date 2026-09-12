@@ -9,11 +9,13 @@ const { dbFetchDuration } = require('../../config/metrics');
 router.get('/', async (req, res) => {
   try {
     const db = getDB();
+    // Parametros de paginacion: size define la cantidad y offset el desplazamiento
     const limit = parseInt(req.query.size) || 0;
+    const offset = parseInt(req.query.offset) || 0;
     const collection = db.collection('clientes');
 
     const timeStart = performance.now();
-    const clientes = await collection.find({}).limit(limit).toArray();
+    const clientes = await collection.find({}).skip(offset).limit(limit).toArray();
     const timeEnd = performance.now();
 
     try {

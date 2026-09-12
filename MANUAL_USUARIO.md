@@ -5,9 +5,9 @@ Este manual muestra, de forma directa y práctica, cómo preparar el proyecto pa
 
 Nota: reemplaza <ruta_del_proyecto> por la ubicación real donde hayas descargado o clonado este proyecto en tu equipo.
 
-Resumen rápido
+Resumen rapido
 - Levantar la pila: ./run.sh all (usa docker compose con perfiles).
-- Ver métricas: /metrics en las APIs.
+- Ver metricas: /metrics en las APIs.
 - Dashboards: Grafana en http://localhost:3000.
 - Agregados/evidencia: ./run.sh aggregate genera un resumen en services/research-api/logs/metrics_summary.json.
 
@@ -63,11 +63,11 @@ Nota: esta lista indica los artefactos que el proyecto genera durante ejecución
    - docker-compose.yml: <ruta_del_proyecto>/docker-compose.yml
    - monitoring/prometheus.yml: <ruta_del_proyecto>/monitoring/prometheus.yml
 
-9) Dashboards JSON de exportación (si se exportan desde Grafana o se copian):
+9) Dashboards JSON de exportacion (si se exportan desde Grafana o se copian):
    - <ruta_del_proyecto>/monitoring/dashboards/ (JSON provisionados en el repo)
    - Estos archivos representan la configuración de los paneles que verá el profesor.
 
-Fin de la sección Evidencia generada.
+Fin de la seccion Evidencia generada.
 
 Comprobaciones básicas (comandos cortos)
 - Ver targets de Prometheus:

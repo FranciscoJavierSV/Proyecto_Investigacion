@@ -73,6 +73,22 @@ case "${1:-help}" in
   benchmark)
     bash scripts/benchmark.sh 20
     ;;
+  query)
+    shift
+    node scripts/query.js "$@"
+    ;;
+  benchmark-queries|benchmark-query)
+    shift
+    node scripts/benchmark_queries.js "$@"
+    ;;
+  scalability)
+    shift
+    node scripts/scalability_test.js "$@"
+    ;;
+  overfetching)
+    shift
+    node scripts/overfetching_test.js "$@"
+    ;;
   stress)
     bash scripts/stress_test.sh
     ;;
@@ -104,9 +120,13 @@ monitoring  Inicia Prometheus y Grafana
 all         Inicia todo excepto el seeder
 seed        Genera e inserta datos
 test        Comprueba los endpoints principales
+query       Ejecuta consulta parametrizada
+benchmark   Ejecuta benchmark REST vs GraphQL
+benchmark-queries  Ejecuta benchmark de consultas REST vs GraphQL
+scalability  Curva de escalabilidad por tamano de lote
+overfetching Comparativa de over-fetching vs under-fetching
 aggregate   Calcula el resumen de metricas
 artillery   Ejecuta pruebas REST y GraphQL
-benchmark   Ejecuta benchmark REST vs GraphQL
 stress      Ejecuta prueba concurrente
 status      Muestra el estado
 logs        Muestra logs recientes

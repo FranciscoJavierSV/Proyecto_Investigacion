@@ -1,0 +1,170 @@
+{
+  "uid": "query-comparison-rest-vs-graphql",
+  "title": "Queries Comparison - REST vs GraphQL",
+  "tags": ["comparison", "queries", "research"],
+  "timezone": "browser",
+  "schemaVersion": 30,
+  "version": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Query Latency p50 (ms) - REST vs GraphQL",
+      "id": 1,
+      "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_ms_bucket{api_type=\"rest\"}[1m])) by (le))",
+          "legendFormat": "REST - p50",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_ms_bucket{api_type=\"graphql\"}[1m])) by (le))",
+          "legendFormat": "GraphQL - p50",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Query Latency p95 (ms) - REST vs GraphQL",
+      "id": 2,
+      "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket{api_type=\"rest\"}[1m])) by (le))",
+          "legendFormat": "REST - p95",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_ms_bucket{api_type=\"graphql\"}[1m])) by (le))",
+          "legendFormat": "GraphQL - p95",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Throughput (Queries/sec) - REST vs GraphQL",
+      "id": 3,
+      "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{api_type=\"rest\"}[1m]))",
+          "legendFormat": "REST (queries/s)",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "sum(rate(http_requests_total{api_type=\"graphql\"}[1m]))",
+          "legendFormat": "GraphQL (queries/s)",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Average Payload Size (Bytes) - REST vs GraphQL",
+      "id": 4,
+      "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "rate(response_size_bytes_sum{api_type=\"rest\"}[1m]) / rate(response_size_bytes_count{api_type=\"rest\"}[1m])",
+          "legendFormat": "REST Payload (bytes)",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "rate(response_size_bytes_sum{api_type=\"graphql\"}[1m]) / rate(response_size_bytes_count{api_type=\"graphql\"}[1m])",
+          "legendFormat": "GraphQL Payload (bytes)",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Average Response Time (ms) - REST vs GraphQL",
+      "id": 5,
+      "gridPos": {"x": 0, "y": 16, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "rate(http_request_duration_ms_sum{api_type=\"rest\"}[1m]) / rate(http_request_duration_ms_count{api_type=\"rest\"}[1m])",
+          "legendFormat": "REST Promedio (ms)",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "rate(http_request_duration_ms_sum{api_type=\"graphql\"}[1m]) / rate(http_request_duration_ms_count{api_type=\"graphql\"}[1m])",
+          "legendFormat": "GraphQL Promedio (ms)",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Server Memory Usage (Bytes) - REST vs GraphQL",
+      "id": 6,
+      "gridPos": {"x": 12, "y": 16, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "memory_usage_bytes{api_type=\"rest\"}",
+          "legendFormat": "REST RAM (bytes)",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "memory_usage_bytes{api_type=\"graphql\"}",
+          "legendFormat": "GraphQL RAM (bytes)",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Server CPU Usage (%) - REST vs GraphQL",
+      "id": 7,
+      "gridPos": {"x": 0, "y": 24, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "cpu_usage_percent{api_type=\"rest\"}",
+          "legendFormat": "REST CPU (%)",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "cpu_usage_percent{api_type=\"graphql\"}",
+          "legendFormat": "GraphQL CPU (%)",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Error Rate (errors/sec) - REST vs GraphQL",
+      "id": 8,
+      "gridPos": {"x": 12, "y": 24, "w": 12, "h": 8},
+      "targets": [
+        {
+          "expr": "sum(rate(errors_total{api_type=\"rest\"}[1m]))",
+          "legendFormat": "REST errores/s",
+          "refId": "A",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        },
+        {
+          "expr": "sum(rate(errors_total{api_type=\"graphql\"}[1m]))",
+          "legendFormat": "GraphQL errores/s",
+          "refId": "B",
+          "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
+        }
+      ]
+    }
+  ]
+}
