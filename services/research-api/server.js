@@ -173,7 +173,7 @@ async function startServer() {
 	app.use('/graphql', yoga);
 
 	// METRICS MIDDLEWARE for REST (collect metrics, logs)
-	app.use(metricsMiddleware);
+	app.use('/rest', metricsMiddleware);
 
 	// MIDDLEWARE PARA RAM MAXIMA EN REST
 	app.use((req, res, next) => {
