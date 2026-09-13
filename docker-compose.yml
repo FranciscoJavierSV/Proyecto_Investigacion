@@ -49,7 +49,7 @@ services:
       topic-init:
         condition: service_completed_successfully
     volumes:
-      - ./data:/app/data
+      - ./data:/app/data:z
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
@@ -108,7 +108,7 @@ services:
     ports:
       - "${COMPARISON_PORT:-4000}:4000"
     volumes:
-      - ./data:/app/data
+      - ./data:/app/data:z
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -125,7 +125,7 @@ services:
     ports:
       - "${RESEARCH_PORT:-4001}:4000"
     volumes:
-      - ./services/research-api/logs:/usr/src/app/logs
+      - ./services/research-api/logs:/usr/src/app/logs:z
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -137,9 +137,9 @@ services:
     environment:
       DATA_DIR: /app/data
     volumes:
-      - ./data:/app/data
-      - ./services/research-api/logs:/app/logs
-      - ./scripts:/app/scripts:ro
+      - ./data:/app/data:z
+      - ./services/research-api/logs:/app/logs:z
+      - ./scripts:/app/scripts:ro,z
 
   prometheus:
     image: prom/prometheus:latest
@@ -147,8 +147,8 @@ services:
     ports:
       - "${PROMETHEUS_PORT:-9090}:9090"
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./monitoring/rules:/etc/prometheus/rules:ro
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro,z
+      - ./monitoring/rules:/etc/prometheus/rules:ro,z
       - prometheus_data:/prometheus
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
@@ -164,8 +164,8 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./monitoring/dashboards:/var/lib/grafana/dashboards:ro
-      - ./monitoring/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/dashboards:/var/lib/grafana/dashboards:ro,z
+      - ./monitoring/provisioning:/etc/grafana/provisioning:ro,z
     depends_on:
       - prometheus
 
