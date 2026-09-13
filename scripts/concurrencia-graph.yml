@@ -1,9 +1,9 @@
 config:
-  target: "http://research-api:4000"
+  target: "{{ $processEnvironment.TARGET_URL }}"
   phases:
-    - duration: 30
-      arrivalRate: 50
-      name: "Prueba de carga GraphQL con 50 req/sec"
+    - duration: "{{ $processEnvironment.DURATION }}"
+      arrivalRate: "{{ $processEnvironment.RATE }}"
+      name: "Prueba de carga GraphQL - {{ $processEnvironment.RATE }} req/sec por {{ $processEnvironment.DURATION }}s"
 
 scenarios:
   - name: "Consultar GraphQL"

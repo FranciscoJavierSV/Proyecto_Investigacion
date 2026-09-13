@@ -73,13 +73,13 @@
       "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
       "targets": [
         {
-          "expr": "rate(response_size_bytes_sum{api_type=\"rest\"}[1m]) / rate(response_size_bytes_count{api_type=\"rest\"}[1m])",
+          "expr": "(rate(response_size_bytes_sum{api_type=\"rest\"}[1m]) / rate(response_size_bytes_count{api_type=\"rest\"}[1m])) > 0",
           "legendFormat": "REST Payload (bytes)",
           "refId": "A",
           "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }
         },
         {
-          "expr": "rate(response_size_bytes_sum{api_type=\"graphql\"}[1m]) / rate(response_size_bytes_count{api_type=\"graphql\"}[1m])",
+          "expr": "(rate(response_size_bytes_sum{api_type=\"graphql\"}[1m]) / rate(response_size_bytes_count{api_type=\"graphql\"}[1m])) > 0",
           "legendFormat": "GraphQL Payload (bytes)",
           "refId": "B",
           "datasource": { "uid": "prometheus-integrated", "type": "prometheus" }

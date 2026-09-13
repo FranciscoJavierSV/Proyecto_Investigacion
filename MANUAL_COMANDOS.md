@@ -127,6 +127,21 @@ Opciones:
 
 ----
 
+4f) Pruebas de carga y concurrencia (Artillery)
+Comando
+[VARS_ENTORNO] ./run.sh artillery [script] [opciones]
+Que hace
+Ejecuta pruebas de carga y stress testing. Si se ejecuta sin parametros, corre en secuencia los escenarios base de REST, GraphQL minimal y GraphQL full.
+
+Opciones:
+DURATION=               [Entorno] Tiempo en segundos de la prueba (default: 30)
+RATE=                   [Entorno] Peticiones por segundo (default: 50)
+TARGET_URL=             [Entorno] URL de la API objetivo (default: http://research-api:4000)
+run <script.yml>        [Comando] Script especifico a ejecutar (ej. scripts/concurrencia-rest.yml)
+-o <archivo.json>       [Comando] Exporta el reporte de la prueba (ej. logs/reporte.json)
+
+----
+
 5) Generar evidencia
 Comando
   ./run.sh aggregate
@@ -163,9 +178,10 @@ Comando
   ./run.sh benchmark-queries -n 200 -c 10 -m batch
   ./run.sh scalability
   ./run.sh overfetching
+  DURATION=15 RATE=25 ./run.sh artillery
   ./run.sh aggregate
 Qué hace
-  Deja el proyecto limpio, lo levanta, valida que funcione, hace prueba de insercion, ejecuta los cuatro casos de prueba de consultas y genera la evidencia final.
+  Deja el proyecto limpio, lo levanta, valida que funcione, hace prueba de insercion, ejecuta los cuatro casos de prueba de consultas, artillery y genera la evidencia final.
 
 ----
 

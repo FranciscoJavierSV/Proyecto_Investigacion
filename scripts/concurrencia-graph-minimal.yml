@@ -1,9 +1,9 @@
 config:
-  target: "http://research-api:4000"
+  target: "{{ $processEnvironment.TARGET_URL }}"
   phases:
-    - duration: 300
-      arrivalRate: 10
-      name: "GraphQL minimal fields - 10 req/sec for 5 min"
+    - duration: "{{ $processEnvironment.DURATION }}"
+      arrivalRate: "{{ $processEnvironment.RATE }}"
+      name: "GraphQL minimal fields - {{ $processEnvironment.RATE }} req/sec por {{ $processEnvironment.DURATION }}s"
 
 scenarios:
   - name: "GraphQL minimal"

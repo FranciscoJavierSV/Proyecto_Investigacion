@@ -66,9 +66,20 @@ case "${1:-help}" in
     "${COMPOSE[@]}" --profile tools run --rm tools node scripts/aggregate_metrics.js
     ;;
   artillery)
-    "${COMPOSE[@]}" --profile tools run --rm tools npx artillery run scripts/concurrencia-rest.yml
-    "${COMPOSE[@]}" --profile tools run --rm tools npx artillery run scripts/concurrencia-graph-minimal.yml
-    "${COMPOSE[@]}" --profile tools run --rm tools npx artillery run scripts/concurrencia-graph-full.yml
+  shift
+    export TARGET_URL="${TARGET_URL:-http://research-api:4000}"
+    export DURATION="${DURATION:-30}"
+    export RATE="${RATE:-50}"
+
+    DOCKER_CMD=("${COMPOSE[@]}" --profile tools run --rm -e TARGET_URL -e DURATION -e RATE tools npx artillery)
+
+    if [ $# -eq 0 ]; then
+      "${DOCKER_CMD[@]}" run scripts/concurrencia-rest.yml
+      "${DOCKER_CMD[@]}" run scripts/concurrencia-graph-minimal.yml
+      "${DOCKER_CMD[@]}" run scripts/concurrencia-graph-full.yml
+    else
+      "${DOCKER_CMD[@]}" "$@"
+    fi
     ;;
   benchmark)
     bash scripts/benchmark.sh 20

@@ -1,10 +1,9 @@
 config:
-  target: "http://research-api:4000"
+  target: "{{ $processEnvironment.TARGET_URL }}"
   phases:
-    - duration: 300
-      arrivalRate: 10
-      name: "Prueba de carga REST con 50 req/sec"
-
+    - duration: "{{ $processEnvironment.DURATION }}"
+      arrivalRate: "{{ $processEnvironment.RATE }}"
+      name: "Prueba de carga REST - {{ $processEnvironment.RATE }} req/sec por {{ $processEnvironment.DURATION }}s"
 scenarios:
   - name: "Consultar REST"
     flow:
