@@ -617,7 +617,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "cpu_usage_percent",
+          "expr": "cpu_usage_percent{api_type=\"rest\"}",
           "legendFormat": "Porcentaje",
           "range": true,
           "refId": "Cpu usage"
@@ -711,7 +711,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "memory_usage_bytes",
+          "expr": "memory_usage_bytes{api_type=\"rest\"}",
           "legendFormat": "Bytes",
           "range": true,
           "refId": "Uso de memoria"
