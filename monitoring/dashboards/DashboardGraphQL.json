@@ -110,7 +110,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "rate(http_request_duration_ms_sum[1m]) \r\n/ \r\nrate(http_request_duration_ms_count[1m])",
+          "expr": "rate(http_request_duration_ms_sum{api_type=\"graphql\"}[1m]) \r\n/ \r\nrate(http_request_duration_ms_count{api_type=\"graphql\"}[1m])",
           "interval": "",
           "legendFormat": "Promedio",
           "range": true,
@@ -122,7 +122,7 @@
             "uid": "prometheus-integrated"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.50, rate(http_request_duration_ms_bucket[1m]))",
+          "expr": "histogram_quantile(0.50, rate(http_request_duration_ms_bucket{api_type=\"graphql\"}[1m]))",
           "instant": false,
           "legendFormat": "Mediana",
           "range": true,
@@ -134,7 +134,7 @@
             "uid": "prometheus-integrated"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, rate(http_request_duration_ms_bucket[1m]))",
+          "expr": "histogram_quantile(0.95, rate(http_request_duration_ms_bucket{api_type=\"graphql\"}[1m]))",
           "instant": false,
           "legendFormat": "Percentil 95",
           "range": true,
@@ -229,7 +229,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "rate(http_requests_total[1m])",
+          "expr": "rate(http_requests_total{api_type=\"graphql\"}[1m])",
           "legendFormat": "Peticiones por segundo",
           "range": true,
           "refId": "Throughput (req/s)"
@@ -323,7 +323,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "rate(errors_total[1m])",
+          "expr": "rate(errors_total{api_type=\"graphql\"}[1m])",
           "legendFormat": "Errores por segundo",
           "range": true,
           "refId": "Errores segundo"
@@ -417,7 +417,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "rate(response_size_bytes_sum[1m])",
+          "expr": "rate(response_size_bytes_sum{api_type=\"graphql\"}[1m])",
           "legendFormat": "Bytes por segundo",
           "range": true,
           "refId": "Payload Size (bytes)"
@@ -511,7 +511,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, rate(ttfb_ms_bucket[1m]))",
+          "expr": "histogram_quantile(0.95, rate(ttfb_ms_bucket{api_type=\"graphql\"}[1m]))",
           "legendFormat": "Percentil 95",
           "range": true,
           "refId": "TTFB P95"
@@ -522,7 +522,7 @@
             "uid": "prometheus-integrated"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.5, rate(ttfb_ms_bucket[1m]))",
+          "expr": "histogram_quantile(0.5, rate(ttfb_ms_bucket{api_type=\"graphql\"}[1m]))",
           "instant": false,
           "legendFormat": "Mediana",
           "range": true,
@@ -617,7 +617,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "cpu_usage_percent",
+          "expr": "cpu_usage_percent{api_type=\"graphql\"}",
           "legendFormat": "Porcentaje",
           "range": true,
           "refId": "Cpu usage"
@@ -711,7 +711,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "memory_usage_bytes",
+          "expr": "memory_usage_bytes{api_type=\"graphql\"}",
           "legendFormat": "Bytes",
           "range": true,
           "refId": "Uso de memoria"
@@ -719,8 +719,7 @@
       ],
       "title": "Memory Usage",
       "type": "timeseries"
-    }
-    ,
+    },
     {
       "datasource": { "type": "prometheus", "uid": "prometheus-integrated" },
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 35 },
